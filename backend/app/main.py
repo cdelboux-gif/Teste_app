@@ -2,13 +2,14 @@ from fastapi import FastAPI
 
 from app.assessments import router as assessments_router
 from app.auth import router as auth_router
+from app.checkins import router as checkins_router
 from app.health_score import router as health_score_router
 from app.profile import router as profile_router
 from app.trails import router as trails_router
 
 app = FastAPI(
     title="VitaPoint Mental Health MVP API",
-    version="0.6.0",
+    version="0.7.0",
     description="API inicial do MVP de monitoramento de saúde mental.",
 )
 
@@ -17,6 +18,7 @@ app.include_router(profile_router)
 app.include_router(assessments_router)
 app.include_router(trails_router)
 app.include_router(health_score_router)
+app.include_router(checkins_router)
 
 
 @app.get("/health")
