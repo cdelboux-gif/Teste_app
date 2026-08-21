@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_url: str = "postgresql+psycopg://vitapoint:vitapoint@localhost:5432/vitapoint"
     redis_url: str = "redis://localhost:6379/0"
+    jwt_secret_key: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    access_token_minutes: int = 30
+    refresh_token_days: int = 30
 
     model_config = SettingsConfigDict(
         env_file=".env",
