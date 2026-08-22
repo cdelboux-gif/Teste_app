@@ -1,0 +1,61 @@
+name: AWS Bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type APPLY to provision the MVP AWS infrastructure'
+        required: true
+        default: 'PLAN'
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: sa-east-1
+  TF_IN_AUTOMATION: 'true'
+
+jobs:
+  terraform:
+    name: Bootstrap AWS infrastructure
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: infra/terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Configure temporary bootstrap AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_BOOTSTRAP_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_BOOTSTRAP_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform apply
+        if: ${{ github.event.inputs.confirm == 'APPLY' }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Show deployment outputs
+        if: ${{ github.event.inputs.confirm == 'APPLY' }}
+        run: |
+          echo 'API URL:'
+          terraform output -raw api_url
+          echo
+          echo 'GitHub deploy role ARN:'
+          terraform output -raw github_deploy_role_arn
+          echo
