@@ -25,6 +25,9 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.8
-      - run: terraform fmt -check -recursive
-      - run: terraform init -backend=false
-      - run: terraform validate
+      - name: Normalize Terraform formatting
+        run: terraform fmt -recursive
+      - name: Initialize providers without remote state
+        run: terraform init -backend=false
+      - name: Validate Terraform configuration
+        run: terraform validate
