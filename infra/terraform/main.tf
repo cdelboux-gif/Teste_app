@@ -260,5 +260,9 @@ resource "aws_ecs_service" "api" {
     container_port   = var.container_port
   }
 
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
   depends_on = [aws_lb_listener.http]
 }
