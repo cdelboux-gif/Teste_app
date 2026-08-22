@@ -11,3 +11,10 @@ dist/
 build/
 .DS_Store
 coverage/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+crash.log
