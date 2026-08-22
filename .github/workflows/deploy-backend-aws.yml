@@ -75,4 +75,15 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false
+
+      - name: Start production service
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --desired-count 1 \
+            --force-new-deployment
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE"
