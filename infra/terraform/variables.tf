@@ -11,3 +11,6 @@ variable "desired_count" { type = number default = 1 }
 variable "container_port" { type = number default = 8000 }
 variable "image_tag" { type = string default = "latest" }
 variable "cors_origins" { type = string default = "https://example.invalid" }
+variable "github_repository" { type = string default = "cdelboux-gif/Teste_app" }
+variable "github_branch" { type = string default = "main" }
+variable "create_github_oidc_provider" { type = bool default = true }
