@@ -75,6 +75,7 @@ variable "github_branch" {
 }
 
 variable "create_github_oidc_provider" {
-  type    = bool
-  default = true
+  description = "Create the GitHub OIDC provider only when the AWS account does not already have one."
+  type        = bool
+  default     = false
 }
