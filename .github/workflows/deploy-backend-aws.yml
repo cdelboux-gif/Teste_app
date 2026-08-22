@@ -23,6 +23,7 @@ env:
   ECS_CLUSTER: vitapoint-production-cluster
   ECS_SERVICE: vitapoint-production-api
   CONTAINER_NAME: api
+  ALB_NAME: vitapoint-production-alb
 
 jobs:
   deploy:
@@ -94,3 +95,30 @@ jobs:
             --cluster "$ECS_CLUSTER" \
             --services "$ECS_SERVICE" \
             --query 'services[0].{status:status,desired:desiredCount,running:runningCount,pending:pendingCount,taskDefinition:taskDefinition}'
+
+      - name: Smoke test public API through ALB
+        shell: bash
+        run: |
+          ALB_DNS=$(aws elbv2 describe-load-balancers \
+            --names "$ALB_NAME" \
+            --region "$AWS_REGION" \
+            --query 'LoadBalancers[0].DNSName' \
+            --output text)
+          API_URL="http://${ALB_DNS}"
+          echo "Public API URL: $API_URL"
+
+          for attempt in $(seq 1 18); do
+            echo "Health check attempt $attempt/18"
+            if body=$(curl --silent --show-error --fail --max-time 10 "$API_URL/health"); then
+              echo "$body"
+              echo "$body" | grep -q '"status":"ok"'
+              echo "Public API health check passed."
+              curl --silent --show-error --fail --max-time 10 "$API_URL/ready"
+              echo
+              exit 0
+            fi
+            sleep 10
+          done
+
+          echo '::error::Public API health check failed through the ALB.'
+          exit 1
