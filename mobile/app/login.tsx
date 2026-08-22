@@ -1,0 +1,7 @@
+import { router } from 'expo-router';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+
+export default function Login() {
+  return <View style={s.page}><Text style={s.brand}>VitaPoint</Text><Text style={s.title}>Entrar</Text><Text style={s.sub}>Acompanhe sua saúde emocional em um só lugar.</Text><TextInput style={s.input} placeholder="E-mail" autoCapitalize="none" keyboardType="email-address"/><TextInput style={s.input} placeholder="Senha" secureTextEntry/><Pressable style={s.primary} onPress={() => router.replace('/dashboard')}><Text style={s.primaryText}>Entrar</Text></Pressable><Pressable onPress={() => router.push('/register')}><Text style={s.link}>Criar minha conta</Text></Pressable></View>;
+}
+const s=StyleSheet.create({page:{flex:1,backgroundColor:'#fff',padding:28,justifyContent:'center'},brand:{fontSize:18,fontWeight:'800',color:'#5B5CE2',marginBottom:28},title:{fontSize:34,fontWeight:'800',color:'#111827'},sub:{fontSize:16,color:'#667085',marginTop:10,marginBottom:28,lineHeight:23},input:{borderWidth:1,borderColor:'#E4E7EC',borderRadius:16,padding:16,fontSize:16,marginBottom:12},primary:{backgroundColor:'#111827',padding:17,borderRadius:16,alignItems:'center',marginTop:8},primaryText:{color:'#fff',fontWeight:'800',fontSize:16},link:{textAlign:'center',color:'#5B5CE2',fontWeight:'700',marginTop:22}});
