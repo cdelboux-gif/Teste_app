@@ -23,7 +23,7 @@ env:
   ECS_CLUSTER: vitapoint-production-cluster
   ECS_SERVICE: vitapoint-production-api
   CONTAINER_NAME: api
-  ALB_NAME: vitapoint-production-alb
+  API_URL: http://vitapoint-production-alb-883517766.sa-east-1.elb.amazonaws.com
 
 jobs:
   deploy:
@@ -99,12 +99,6 @@ jobs:
       - name: Smoke test public API through ALB
         shell: bash
         run: |
-          ALB_DNS=$(aws elbv2 describe-load-balancers \
-            --names "$ALB_NAME" \
-            --region "$AWS_REGION" \
-            --query 'LoadBalancers[0].DNSName' \
-            --output text)
-          API_URL="http://${ALB_DNS}"
           echo "Public API URL: $API_URL"
 
           for attempt in $(seq 1 18); do
