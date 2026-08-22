@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "VitaPoint",
+    "slug": "vitapoint",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "vitapoint",
+    "userInterfaceStyle": "light",
+    "plugins": ["expo-router"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
