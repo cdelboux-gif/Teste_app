@@ -44,8 +44,9 @@ variable "ecs_memory" {
 }
 
 variable "desired_count" {
-  type    = number
-  default = 1
+  description = "Bootstrap task count. Keep at zero until a backend image is pushed to ECR."
+  type        = number
+  default     = 0
 }
 
 variable "container_port" {
