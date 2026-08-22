@@ -23,3 +23,8 @@ output "rds_endpoint" {
 output "api_secret_arn" {
   value = aws_secretsmanager_secret.api.arn
 }
+
+output "github_deploy_role_arn" {
+  description = "Set this value as the GitHub Actions production secret AWS_DEPLOY_ROLE_ARN."
+  value       = aws_iam_role.github_deploy.arn
+}
