@@ -25,13 +25,31 @@ jobs:
     name: Backend tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: vitapoint
+          POSTGRES_PASSWORD: vitapoint
+          POSTGRES_DB: vitapoint
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U vitapoint -d vitapoint"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     defaults:
       run:
         working-directory: backend
+
     env:
       PYTHONPATH: .
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUNBUFFERED: '1'
+      DATABASE_URL: postgresql+psycopg://vitapoint:vitapoint@localhost:5432/vitapoint
 
     steps:
       - name: Checkout repository
@@ -54,7 +72,16 @@ jobs:
         run: python -c "from app.main import app; print(app.title)"
 
       - name: Compile Python sources
-        run: python -m compileall -q app tests
+        run: python -m compileall -q app tests alembic
+
+      - name: Apply database migrations
+        run: alembic upgrade head
+
+      - name: Validate migration rollback
+        run: alembic downgrade base
+
+      - name: Reapply database migrations
+        run: alembic upgrade head
 
       - name: Run test suite
         run: python -m pytest -q
