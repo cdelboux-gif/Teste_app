@@ -38,7 +38,10 @@ resource "aws_subnet" "private" {
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-  route { cidr_block = "0.0.0.0/0" gateway_id = aws_internet_gateway.main.id }
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
 }
 
 resource "aws_route_table_association" "public" {
@@ -76,21 +79,46 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_security_group" "alb" {
   name   = "${local.name}-alb"
   vpc_id = aws_vpc.main.id
-  ingress { from_port = 80 to_port = 80 protocol = "tcp" cidr_blocks = ["0.0.0.0/0"] }
-  egress  { from_port = 0 to_port = 0 protocol = "-1" cidr_blocks = ["0.0.0.0/0"] }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "api" {
   name   = "${local.name}-api"
   vpc_id = aws_vpc.main.id
-  ingress { from_port = var.container_port to_port = var.container_port protocol = "tcp" security_groups = [aws_security_group.alb.id] }
-  egress  { from_port = 0 to_port = 0 protocol = "-1" cidr_blocks = ["0.0.0.0/0"] }
+  ingress {
+    from_port       = var.container_port
+    to_port         = var.container_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "db" {
   name   = "${local.name}-db"
   vpc_id = aws_vpc.main.id
-  ingress { from_port = 5432 to_port = 5432 protocol = "tcp" security_groups = [aws_security_group.api.id] }
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.api.id]
+  }
 }
 
 resource "aws_db_instance" "main" {
@@ -164,14 +192,24 @@ resource "aws_lb_target_group" "api" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.main.id
-  health_check { path = "/health" matcher = "200" interval = 30 timeout = 5 healthy_threshold = 2 unhealthy_threshold = 3 }
+  health_check {
+    path                = "/health"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+  }
 }
 
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.api.arn
   port              = 80
   protocol          = "HTTP"
-  default_action { type = "forward" target_group_arn = aws_lb_target_group.api.arn }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.api.arn
+  }
 }
 
 resource "aws_ecs_task_definition" "api" {
