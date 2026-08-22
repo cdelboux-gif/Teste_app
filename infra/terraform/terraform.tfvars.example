@@ -1,0 +1,7 @@
+project_name      = "vitapoint"
+environment       = "mvp"
+aws_region        = "sa-east-1"
+image_tag         = "latest"
+cors_origins      = "https://app.example.com"
+desired_count     = 1
+db_instance_class = "db.t4g.micro"
