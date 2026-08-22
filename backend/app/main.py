@@ -50,9 +50,10 @@ def readiness_check() -> dict[str, str]:
 
 
 @app.get("/")
-def root() -> dict[str, str]:
+def root() -> dict[str, str | None]:
     return {
         "name": settings.app_name,
         "status": "running",
         "environment": settings.environment,
+        "docs": app.docs_url,
     }
