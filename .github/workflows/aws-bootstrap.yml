@@ -94,8 +94,11 @@ jobs:
       - name: Show deployment outputs
         if: ${{ github.event.inputs.confirm == 'APPLY' || github.event.inputs.confirm == 'APLICAR' }}
         run: |
-          echo 'API URL:'
+          echo 'API HTTP URL:'
           terraform output -raw api_url
+          echo
+          echo 'API HTTPS URL:'
+          terraform output -raw api_https_url
           echo
           echo 'GitHub deploy role ARN:'
           terraform output -raw github_deploy_role_arn
