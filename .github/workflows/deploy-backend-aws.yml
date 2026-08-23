@@ -23,7 +23,7 @@ env:
   ECS_CLUSTER: vitapoint-production-cluster
   ECS_SERVICE: vitapoint-production-api
   CONTAINER_NAME: api
-  API_URL: http://vitapoint-production-alb-883517766.sa-east-1.elb.amazonaws.com
+  API_URL: https://djns4j8rrptkg.cloudfront.net
 
 jobs:
   deploy:
@@ -96,17 +96,17 @@ jobs:
             --services "$ECS_SERVICE" \
             --query 'services[0].{status:status,desired:desiredCount,running:runningCount,pending:pendingCount,taskDefinition:taskDefinition}'
 
-      - name: Smoke test public API through ALB
+      - name: Smoke test public API through HTTPS
         shell: bash
         run: |
-          echo "Public API URL: $API_URL"
+          echo "Public HTTPS API URL: $API_URL"
 
           for attempt in $(seq 1 18); do
             echo "Health check attempt $attempt/18"
             if body=$(curl --silent --show-error --fail --max-time 10 "$API_URL/health"); then
               echo "$body"
               echo "$body" | grep -q '"status":"ok"'
-              echo "Public API health check passed."
+              echo "Public HTTPS API health check passed."
               curl --silent --show-error --fail --max-time 10 "$API_URL/ready"
               echo
               exit 0
@@ -114,5 +114,5 @@ jobs:
             sleep 10
           done
 
-          echo '::error::Public API health check failed through the ALB.'
+          echo '::error::Public HTTPS API health check failed through CloudFront.'
           exit 1
