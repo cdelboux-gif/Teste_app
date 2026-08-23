@@ -121,12 +121,12 @@ jobs:
       - name: Verify auth route and production database connectivity
         shell: bash
         run: |
-          # A nonexistent user must return 401. Reaching that response proves the
-          # public auth route is working and the API successfully queried PostgreSQL.
+          # A syntactically valid but nonexistent user must return 401. Reaching that
+          # response proves the public auth route works and PostgreSQL was queried.
           status=$(curl --silent --show-error --output /tmp/auth-response.json \
             --write-out '%{http_code}' --max-time 15 \
             -H 'Content-Type: application/json' \
-            -d '{"email":"production-smoke-test-not-a-user@vitapoint.invalid","password":"not-a-real-password"}' \
+            -d '{"email":"production-smoke-test-not-a-user@vitapoint.example.com","password":"not-a-real-password"}' \
             "$API_URL/auth/login")
           cat /tmp/auth-response.json
           echo
