@@ -3,6 +3,11 @@ output "api_url" {
   value       = "http://${aws_lb.api.dns_name}"
 }
 
+output "api_https_url" {
+  description = "HTTPS URL for the production API through CloudFront."
+  value       = "https://${aws_cloudfront_distribution.api.domain_name}"
+}
+
 output "ecr_repository_url" {
   value = aws_ecr_repository.api.repository_url
 }
