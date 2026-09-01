@@ -19,7 +19,8 @@
       },
       "env": {
         "APP_ENV": "preview",
-        "EXPO_PUBLIC_API_URL": "https://djns4j8rrptkg.cloudfront.net"
+        "EXPO_PUBLIC_API_URL": "https://djns4j8rrptkg.cloudfront.net",
+        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8 -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false"
       }
     },
     "production": {
